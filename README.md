@@ -26,6 +26,14 @@ FR : `review` exige une revue humaine ; `failure` signale une erreur. Le contenu
 
 ES: `review` requiere revisión humana; `failure` indica un error. El contenido se envía a la API TypeSafe Jev.
 
+## TLS / TLS / TLS
+
+FR : si votre installation Python ne trouve pas les certificats racines, définissez `SSL_CERT_FILE` vers un bundle CA valide (par exemple `certifi.where()`). Ne désactivez pas la vérification TLS.
+
+EN: if Python cannot find root certificates, set `SSL_CERT_FILE` to a valid CA bundle (for example `certifi.where()`). Keep TLS verification enabled.
+
+ES: si Python no encuentra los certificados raíz, defina `SSL_CERT_FILE` con un paquete CA válido (por ejemplo `certifi.where()`). Mantenga activa la verificación TLS.
+
 ## Development / Développement / Desarrollo
 
 `python -m unittest discover -p "test_*.py" -v`
