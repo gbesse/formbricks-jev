@@ -85,7 +85,11 @@ class Handler(BaseHTTPRequestHandler):
         if self.path != '/webhook':
             self.send_error(404)
             return
-        length = int(self.headers.get('Content-Length','0'))
+        try:
+            length = int(self.headers.get('Content-Length','0'))
+        except ValueError:
+            self._reply(400, {'error':'invalid_length'})
+            return
         if not 0 < length <= 65536:
             self.send_error(413)
             return
