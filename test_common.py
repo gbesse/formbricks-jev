@@ -21,6 +21,31 @@ class JevClientTest(unittest.TestCase):
         self.assertEqual("review", client.decide("")["route"])
         self.assertEqual("review", client.decide("long")["route"])
 
+    def test_repeated_content_uses_bounded_digest_cache(self):
+        calls = []
+        def transport(payload):
+            calls.append(payload)
+            return {"answers": {"decision": {"type": "noul", "noul": 0.91}}}
+        client = JevClient("Is this relevant?", cache_size=1, transport=transport)
+        first = client.decide("one")
+        first["route"] = "tampered"
+        self.assertEqual("yes", client.decide("one")["route"])
+        self.assertEqual(1, len(calls))
+        client.decide("two")
+        client.decide("one")
+        self.assertEqual(3, len(calls))
+
+    def test_failure_is_not_cached(self):
+        calls = []
+        def transport(payload):
+            calls.append(payload)
+            if len(calls) == 1:
+                raise OSError("temporary")
+            return {"answers": {"decision": {"type": "noul", "noul": 0.91}}}
+        client = JevClient("Is this relevant?", transport=transport)
+        self.assertEqual("failure", client.decide("one")["route"])
+        self.assertEqual("yes", client.decide("one")["route"])
+
 
 if __name__ == "__main__":
     unittest.main()
